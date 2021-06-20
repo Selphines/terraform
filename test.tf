@@ -43,7 +43,7 @@ resource "aws_security_group" "allow_tls" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ngress {
+  engress {
     description = "tcp 443"
     from_port   = 443
     to_port     = 443
