@@ -6,18 +6,21 @@ provider "aws" {
 ####
 
 resource "aws_instance" "my_ubuntu" {
-  ami                    = "ami-0194c3e07668a7e36 "
+  ami                    = "ami-0194c3e07668a7e36"
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.allow_tls.id]
   user_data              = <<EOF
 #!/bin/bash
 apt update -y
 apt install apache2 -y
-myip='curl http://checkip.amazonaws.com'
+myip=$(curl checkip.amazonaws.com)
 echo "<h2>WebServer with my IP: $myip</h2><br>Build by Terraform!" > /var/www/html/index.html
 sudo service apache2 start
 chekconfig apache2 on
 EOF
+  tags = {
+    Name = "Ubuntu_Web"
+  }
 }
 
 /*
