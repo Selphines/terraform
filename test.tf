@@ -5,6 +5,10 @@ provider "aws" {
 
 ####
 
+resource "aws_eip" "my_static_ip" {
+  instance = aws_instance.my_ubuntu.id
+}
+
 resource "aws_instance" "my_ubuntu" {
   ami                    = "ami-0194c3e07668a7e36"
   instance_type          = "t3.micro"
@@ -12,6 +16,9 @@ resource "aws_instance" "my_ubuntu" {
   user_data              = file("user_data.sh")
   tags = {
     Name = "Ubuntu_Web"
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -30,18 +37,20 @@ resource "aws_security_group" "allow_tls" {
   name        = "Web_Server_Security_Group"
   description = "My First Security Group"
 
-  ingress {
-    description = "tcp 80"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = ["80", "443"]
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
   }
 
   ingress {
-    description = "tcp 443"
-    from_port   = 443
-    to_port     = 443
+    description = "tcp 22"
+    from_port   = 22
+    to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
