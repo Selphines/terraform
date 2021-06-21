@@ -9,14 +9,7 @@ resource "aws_instance" "my_ubuntu" {
   ami                    = "ami-0194c3e07668a7e36"
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.allow_tls.id]
-  user_data              = <<EOF
-#!/bin/bash
-apt update -y
-apt install wget -y
-wget https://raw.githubusercontent.com/Selphines/terraform/main/web.sh
-chmod +x web.sh
-./web.sh
-EOF
+  user_data              = file("user_data.sh")
   tags = {
     Name = "Ubuntu_Web"
   }
