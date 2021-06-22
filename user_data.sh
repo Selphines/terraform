@@ -6,3 +6,4 @@ wget https://raw.githubusercontent.com/Selphines/terraform/main/useradd.sh
 chmod +x web.sh
 chmod +x useradd.sh
 ./web.sh
+./useradd.sh
